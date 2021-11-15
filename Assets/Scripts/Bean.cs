@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(AudioSource))]
-[RequireComponent(typeof(CircleCollider2D))]
+[RequireComponent(typeof(CapsuleCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 public class Bean : MonoBehaviour
@@ -13,6 +13,8 @@ public class Bean : MonoBehaviour
 
     public AudioClip collectClip;
     public AudioClip explodeClip;
+
+    public bool isCaught;
 
     bool isDead;
 
@@ -31,21 +33,25 @@ public class Bean : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(!isDead){
+        if(isCaught){
+            transform.localScale *= 0.95f;
+        } else if(!isDead){
             transform.Translate(-Vector3.up * fallSpeed * Time.fixedDeltaTime);
         }
     }
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        Debug.Log(other.gameObject.name);
+        other.gameObject.GetComponent<Pyoro>().Die();
+        StartCoroutine(Explode());
+        isDead = true;
     }
 
     void OnTriggerEnter2D(Collider2D other){
-        if(isDead){
+        if(isDead || isCaught){
             return;
         }
-        
+
         if(other.gameObject.tag == "Tile"){
             Destroy(other.gameObject);
             StartCoroutine(Explode());
@@ -68,5 +74,10 @@ public class Bean : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    public void Activate()
+    {
+
     }
 }

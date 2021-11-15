@@ -44,3 +44,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 3073243081
+    locked: 0
+  - name: ForegroundBehindFrame
+    uniqueID: 2759117055
+    locked: 0
+  - name: Frame
+    uniqueID: 216831071
+    locked: 0
+  - name: ForegroundAheadFrame
+    uniqueID: 523334431
+    locked: 0
