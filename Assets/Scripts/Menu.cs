@@ -7,6 +7,9 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CanvasGroup))]
 public class Menu : MonoBehaviour
 {
+    static Menu _instance;
+    public static Menu Instance { get { return _instance; } }
+
     public float fadeSpeed = 5f;
 
     bool onMainMenu;
@@ -14,25 +17,44 @@ public class Menu : MonoBehaviour
     CanvasGroup cg;
 
     Pyoro pyoro;
-    BeanGenerator bg;
+    BeanGenerator beanGen;
+    public DigitalRuby.SoundManagerNamespace.BGMusic bgMusic;
+
+    bool startMusic;
+
+    void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+        } else {
+            _instance = this;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         cg = GetComponent<CanvasGroup>();
 
-        pyoro = GameObject.FindWithTag("Player").GetComponent<Pyoro>();
-        bg = GameObject.FindWithTag("BeanGenerator").GetComponent<BeanGenerator>();
+        pyoro = Pyoro.Instance;
+        beanGen = BeanGenerator.Instance;
+        bgMusic = DigitalRuby.SoundManagerNamespace.BGMusic.Instance;
 
         pyoro.acceptInput = false;
 
         onMainMenu = true;
+
+        startMusic = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if(startMusic){
+            bgMusic.PlayMenuMusic(0.01f);
+            startMusic = false;
+        }
     }
 
     public void Start(InputAction.CallbackContext context)
@@ -49,12 +71,16 @@ public class Menu : MonoBehaviour
 
     IEnumerator HideAnimation()
     {
+        onMainMenu = false;
+
+        bgMusic.PlayTheme1();
+
         while(cg.alpha > 0){
             cg.alpha -= fadeSpeed * Time.deltaTime;
             yield return null;
         }
 
         pyoro.acceptInput = true;
-        bg.generateBeans = true;
+        beanGen.generateBeans = true;
     }
 }

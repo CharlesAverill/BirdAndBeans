@@ -66,7 +66,7 @@ namespace DigitalRuby.SoundManagerNamespace
             AudioSource = audioSource;
             if (audioSource != null)
             {
-                AudioSource.loop = true;
+                //AudioSource.loop = true;
                 AudioSource.volume = 0.0f;
                 AudioSource.Stop();
             }
@@ -96,7 +96,7 @@ namespace DigitalRuby.SoundManagerNamespace
             if (AudioSource != null)
             {
                 AudioSource.volume = startVolume = (AudioSource.isPlaying ? AudioSource.volume : 0.0f);
-                AudioSource.loop = true;
+                //AudioSource.loop = true;
                 currentMultiplier = startMultiplier;
                 OriginalTargetVolume = targetVolume;
                 TargetVolume = targetVolume;
