@@ -386,6 +386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeSpeed: 0.5
+  bgMusic: {fileID: 0}
 --- !u!225 &54485314
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -458,13 +459,13 @@ SpriteRenderer:
   m_SortingLayerID: 523334431
   m_SortingLayer: 4
   m_SortingOrder: 1
-  m_Sprite: {fileID: -3557554893070573299, guid: 803354f2c4f1937a58e0c1ef70fb8369,
+  m_Sprite: {fileID: 7729768860333772239, guid: 803354f2c4f1937a58e0c1ef70fb8369,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.84210527, y: 0.84210527}
+  m_Size: {x: 0.7894737, y: 0.7894737}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -516,8 +517,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.84210527, y: 0.84210527}
-    newSize: {x: 0.84210527, y: 0.84210527}
+    oldSize: {x: 0.7894737, y: 0.7894737}
+    newSize: {x: 0.7894737, y: 0.7894737}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -1405,7 +1406,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   beanPrefab: {fileID: 2466804556599101147, guid: 562777c6408b46589a61962b5a718da0,
     type: 3}
-  generationRate: 80
+  generationRate: 150
   leftBound: {fileID: 873861737}
   rightBound: {fileID: 1713207260}
   beans: []

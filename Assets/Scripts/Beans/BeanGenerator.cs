@@ -10,8 +10,8 @@ public class BeanGenerator : MonoBehaviour
     public GameObject beanPrefab;
 
     // Number of frames between bean generation
-    public int generationRate = 120;
-    int maxGenerationRate;
+    public float generationRate = 120;
+    float maxGenerationRate;
     const int minGenerationRate = 6;
     int frameCount;
     float timePassed;
@@ -36,7 +36,7 @@ public class BeanGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        frameCount = generationRate;
+        frameCount = (int)generationRate;
         maxGenerationRate = generationRate;
     }
 
@@ -45,11 +45,14 @@ public class BeanGenerator : MonoBehaviour
     {
         if(generateBeans){
             timePassed += Time.deltaTime;
+            if(timePassed > 15f && (int)timePassed % 15 == 0){
+                Debug.Log(timePassed + " " + generationRate);
+            }
 
             UpdateGenerationRate();
 
             if(frameCount++ > generationRate){
-                frameCount = frameCount % generationRate;
+                frameCount = 0;
 
                 float xCoord = Random.Range(leftBound.position.x, rightBound.position.x);
                 Bean newBean = Instantiate(beanPrefab, new Vector3(xCoord, leftBound.position.y, leftBound.position.z), Quaternion.identity).GetComponent<Bean>();
@@ -60,13 +63,8 @@ public class BeanGenerator : MonoBehaviour
         }
     }
 
-    // Use a combo of sine and logistic functions to decrease the generation rate over time with randomness
     void UpdateGenerationRate()
     {
-        float generationRateDiff = (maxGenerationRate - minGenerationRate);
-        float logistic = generationRateDiff / (1f + Mathf.Exp(0.08f * (timePassed - generationRateDiff))) + minGenerationRate;
-        float sine = 10f * Mathf.Sin(timePassed / 10f);
-
-        generationRate =  (int)Mathf.Max(logistic + sine + Random.Range(-15f, 15f), minGenerationRate);
+        generationRate = Mathf.Max(maxGenerationRate - 2f * timePassed, 10);
     }
 }

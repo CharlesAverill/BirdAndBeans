@@ -51,6 +51,7 @@ MonoBehaviour:
   fallSpeed: 2
   collectClip: {fileID: 0}
   explodeClip: {fileID: 8300000, guid: c56e9057dbfcbc69593eab177b7f57a5, type: 3}
+  isCaught: 0
 --- !u!212 &2466804556599101148
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -90,7 +91,7 @@ SpriteRenderer:
   m_SortingLayerID: -1535850241
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1975635887328401948, guid: 803354f2c4f1937a58e0c1ef70fb8369,
+  m_Sprite: {fileID: -7365091535247084893, guid: 803354f2c4f1937a58e0c1ef70fb8369,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
