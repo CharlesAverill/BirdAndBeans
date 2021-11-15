@@ -35,6 +35,7 @@ public class Bean : MonoBehaviour
     {
         if(isCaught){
             transform.localScale *= 0.95f;
+            rb.simulated = false;
         } else if(!isDead){
             transform.Translate(-Vector3.up * fallSpeed * Time.fixedDeltaTime);
         }
@@ -42,9 +43,11 @@ public class Bean : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        other.gameObject.GetComponent<Pyoro>().Die();
-        StartCoroutine(Explode());
-        isDead = true;
+        if(other.gameObject.tag == "Player"){
+            other.gameObject.GetComponent<Pyoro>().Die();
+            StartCoroutine(Explode());
+            isDead = true;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other){

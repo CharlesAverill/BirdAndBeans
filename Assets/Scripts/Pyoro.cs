@@ -23,6 +23,10 @@ public class Pyoro : MonoBehaviour
     Vector2 inputVector;
     float facing = -1;
 
+    bool isDead;
+
+    public bool acceptInput = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,7 +42,7 @@ public class Pyoro : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(!tongue.isLaunching){
+        if(!tongue.isLaunching && !isDead){
             anim.SetBool("isLaunching", false);
             DoMovement();
         }
@@ -60,6 +64,10 @@ public class Pyoro : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
+        if(!acceptInput){
+            return;
+        }
+
         Vector2 tempVector = context.ReadValue<Vector2>();
         if(tempVector.x != 0){
             facing = tempVector.x;
@@ -70,7 +78,7 @@ public class Pyoro : MonoBehaviour
 
     public void Fire(InputAction.CallbackContext context)
     {
-        if(tongue.isLaunching){
+        if(tongue.isLaunching || isDead || !acceptInput){
             return;
         }
 
@@ -81,6 +89,27 @@ public class Pyoro : MonoBehaviour
 
     public void Die()
     {
-        
+        if(!isDead){
+            StartCoroutine(DieAnimation());
+        }
+    }
+
+    IEnumerator DieAnimation()
+    {
+        isDead = true;
+        anim.SetTrigger("die");
+
+        float targetDestroyHeight = transform.position.y - sr.size.y * 3f;
+
+        // Bounce him before he falls down
+        float yVelocity = 7f;
+        while(transform.position.y > targetDestroyHeight)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y + yVelocity * Time.deltaTime, transform.position.z);
+            yVelocity += -9.8f * Time.deltaTime;
+            yield return null;
+        }
+
+        Destroy(gameObject);
     }
 }
