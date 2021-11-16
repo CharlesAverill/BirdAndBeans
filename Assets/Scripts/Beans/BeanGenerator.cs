@@ -56,6 +56,9 @@ public class BeanGenerator : MonoBehaviour
 
                 float xCoord = Random.Range(leftBound.position.x, rightBound.position.x);
                 Bean newBean = Instantiate(beanPrefab, new Vector3(xCoord, leftBound.position.y, leftBound.position.z), Quaternion.identity).GetComponent<Bean>();
+                // Set bean color with distribution {green = .9, pink = .08, special = .02}
+                int r = Random.Range(1, 101);
+                newBean.SetBeanType(r < 90 ? "green" : (r < 98 ? "pink" : "special"));
 
                 newBean.transform.parent = transform;
                 beans.Add(newBean);

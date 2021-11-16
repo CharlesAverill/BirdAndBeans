@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79afab78779e18132a9882ba9fd5b9af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  beanType: 0
   fallSpeed: 2
   collectClip: {fileID: 0}
   explodeClip: {fileID: 8300000, guid: c56e9057dbfcbc69593eab177b7f57a5, type: 3}
@@ -252,6 +253,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.25, y: 0.92}
+  m_Offset: {x: 0, y: -0.1}
+  m_Size: {x: 0.25, y: 0.63747257}
   m_Direction: 0

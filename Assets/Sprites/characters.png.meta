@@ -34,10 +34,10 @@ TextureImporter:
     second: characters_9
   - first:
       213: 7729768860333772239
-    second: pyoro_idle_1
+    second: pyoro_idle
   - first:
       213: -3102994270238535240
-    second: pyoro_idle_2
+    second: pyoro_walk
   - first:
       213: -4572274602858593414
     second: pyoro_launch_1
@@ -603,13 +603,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pyoro_idle_1
+      name: pyoro_idle
       rect:
         serializedVersion: 2
         x: 7
         y: 402
-        width: 15
-        height: 15
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -624,13 +624,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pyoro_idle_2
+      name: pyoro_walk
       rect:
         serializedVersion: 2
         x: 24
         y: 402
-        width: 15
-        height: 14
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -671,8 +671,8 @@ TextureImporter:
         serializedVersion: 2
         x: 59
         y: 402
-        width: 15
-        height: 15
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

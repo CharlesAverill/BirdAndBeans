@@ -62,16 +62,20 @@ public class Pyoro : MonoBehaviour
 
     public void DoMovement()
     {
-        RaycastHit2D hit;
+        bool playWalkAnimation = false;
+
         if(inputVector.magnitude > 0){
             transform.localScale = new Vector3(-1f * facing * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             tongue.Flip(-1f * facing);
 
-            hit = Physics2D.Raycast(transform.position + new Vector3(facing * sr.size.x / 2.5f, 0f, 0f), -Vector2.up, 1f);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(facing * sr.size.x / 2.5f, 0f, 0f), -Vector2.up, 1f);
             if(hit.collider != null){
+                playWalkAnimation = true;
                 rb.MovePosition(new Vector2(transform.position.x, transform.position.y) + inputVector);
             }
         }
+
+        anim.SetBool("isWalking", playWalkAnimation);
     }
 
     public void Move(InputAction.CallbackContext context)

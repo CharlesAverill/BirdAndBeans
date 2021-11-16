@@ -9,6 +9,13 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Bean : MonoBehaviour
 {
+    public enum BeanType {
+        Green,
+        Pink,
+        Special
+    }
+    public BeanType beanType;
+
     public float fallSpeed;
 
     public AudioClip collectClip;
@@ -24,7 +31,7 @@ public class Bean : MonoBehaviour
     Rigidbody2D rb;
 
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         anim = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
@@ -79,8 +86,32 @@ public class Bean : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void SetBeanType(string newBeanType)
+    {
+        switch(newBeanType.ToLower()){
+            case "green":
+                beanType = BeanType.Green;
+                anim.SetInteger("BeanColor", 0);
+                break;
+            case "pink":
+                beanType = BeanType.Pink;
+                anim.SetInteger("BeanColor", 1);
+                break;
+            case "special":
+                beanType = BeanType.Special;
+                anim.SetInteger("BeanColor", 2);
+                break;
+        }
+        anim.SetTrigger("BeanColorChange");
+    }
+
     public void Activate()
     {
-
+        switch(beanType){
+            case BeanType.Pink:
+                break;
+            case BeanType.Special:
+                break;
+        }
     }
 }
