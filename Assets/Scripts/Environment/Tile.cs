@@ -6,6 +6,8 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     SpriteRenderer sr;
+    
+    public int index;
 
     public float size {
         get {

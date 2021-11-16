@@ -12,7 +12,7 @@ public class BeanGenerator : MonoBehaviour
     // Number of frames between bean generation
     public float generationRate = 120;
     float maxGenerationRate;
-    const int minGenerationRate = 6;
+    const int minGenerationRate = 12;
     int frameCount;
     float timePassed;
 
@@ -22,6 +22,7 @@ public class BeanGenerator : MonoBehaviour
     public List<Bean> beans;
 
     public bool generateBeans = false;
+    bool destroying = false;
 
     void Awake()
     {
@@ -38,16 +39,15 @@ public class BeanGenerator : MonoBehaviour
     {
         frameCount = (int)generationRate;
         maxGenerationRate = generationRate;
+
+        beans = new List<Bean>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(generateBeans){
+        if(generateBeans && !destroying){
             timePassed += Time.deltaTime;
-            if(timePassed > 15f && (int)timePassed % 15 == 0){
-                Debug.Log(timePassed + " " + generationRate);
-            }
 
             UpdateGenerationRate();
 
@@ -58,7 +58,12 @@ public class BeanGenerator : MonoBehaviour
                 Bean newBean = Instantiate(beanPrefab, new Vector3(xCoord, leftBound.position.y, leftBound.position.z), Quaternion.identity).GetComponent<Bean>();
                 // Set bean color with distribution {green = .9, pink = .08, special = .02}
                 int r = Random.Range(1, 101);
-                newBean.SetBeanType(r < 90 ? "green" : (r < 98 ? "pink" : "special"));
+                newBean.SetBeanType(r < 90 ? "green" : (r < 99 ? "pink" : "special"));
+
+                if(beans.Count == 0){
+                    newBean.fallSpeed = Bean.minFallSpeed;
+                    newBean.SetBeanType("green");
+                }
 
                 newBean.transform.parent = transform;
                 beans.Add(newBean);
@@ -69,5 +74,26 @@ public class BeanGenerator : MonoBehaviour
     void UpdateGenerationRate()
     {
         generationRate = Mathf.Max(maxGenerationRate - 2f * timePassed, 10);
+    }
+
+    public void DestroyAllBeans()
+    {
+        StartCoroutine(_DestroyAllBeansEnumerator());
+    }
+
+    IEnumerator _DestroyAllBeansEnumerator()
+    {
+        destroying = true;
+
+        for(int i = 0; i < beans.Count; i++){
+            if(beans[i] != null){
+                beans[i].Explode();
+                yield return null;
+            }
+        }
+
+        beans = new List<Bean>();
+        timePassed = 0f;
+        destroying = false;
     }
 }

@@ -16,7 +16,9 @@ public class Bean : MonoBehaviour
     }
     public BeanType beanType;
 
-    public float fallSpeed;
+    public float fallSpeed = 0f;
+    public const float minFallSpeed = 2f;
+    public const float maxFallSpeed = 3f;
 
     public AudioClip collectClip;
     public AudioClip explodeClip;
@@ -30,12 +32,24 @@ public class Bean : MonoBehaviour
 
     Rigidbody2D rb;
 
+    AngelGenerator ag;
+    BeanGenerator bg;
+    Ground ground;
+
     // Start is called before the first frame update
     void OnEnable()
     {
         anim = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody2D>();
+
+        ag = AngelGenerator.Instance;
+        bg = BeanGenerator.Instance;
+        ground = Ground.Instance;
+
+        if(fallSpeed == 0f){
+            fallSpeed = Random.Range(minFallSpeed, maxFallSpeed);
+        }
     }
 
     void FixedUpdate()
@@ -52,7 +66,7 @@ public class Bean : MonoBehaviour
     {
         if(other.gameObject.tag == "Player"){
             other.gameObject.GetComponent<Pyoro>().Die();
-            StartCoroutine(Explode());
+            Explode();
             isDead = true;
         }
     }
@@ -63,15 +77,23 @@ public class Bean : MonoBehaviour
         }
 
         if(other.gameObject.tag == "Tile"){
+            ground.AddEmptyTile(other.gameObject.GetComponent<Tile>().index);
             Destroy(other.gameObject);
-            StartCoroutine(Explode());
+            Explode();
         } else if(other.gameObject.tag == "BeanDeathZone"){
             Destroy(gameObject);
         }
         isDead = true;
     }
 
-    IEnumerator Explode(){
+    public void Explode()
+    {
+        isDead = true;
+        StartCoroutine(_ExplodeEnumerator());
+    }
+
+    IEnumerator _ExplodeEnumerator()
+    {
         rb.simulated = false;
 
         audioSource.Stop();
@@ -109,8 +131,11 @@ public class Bean : MonoBehaviour
     {
         switch(beanType){
             case BeanType.Pink:
+                ag.SendAngel();
                 break;
             case BeanType.Special:
+                ag.SendAllAngels();
+                bg.DestroyAllBeans();
                 break;
         }
     }
