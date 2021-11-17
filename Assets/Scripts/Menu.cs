@@ -14,14 +14,13 @@ public class Menu : MonoBehaviour
 
     bool onMainMenu;
 
-    CanvasGroup cg;
+    CanvasGroup mainMenuCG;
 
-    Ground ground;
+    GameController gc;
     Pyoro pyoro;
     BeanGenerator beanGen;
-    public DigitalRuby.SoundManagerNamespace.BGMusic bgMusic;
 
-    public CanvasGroup gameOverScreenCg;
+    public CanvasGroup gameOverScreenCG;
 
     bool startMusic;
     bool transitioningToMenu;
@@ -42,12 +41,11 @@ public class Menu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cg = GetComponent<CanvasGroup>();
+        mainMenuCG = GetComponent<CanvasGroup>();
 
-        ground = Ground.Instance;
         pyoro = Pyoro.Instance;
         beanGen = BeanGenerator.Instance;
-        bgMusic = DigitalRuby.SoundManagerNamespace.BGMusic.Instance;
+        gc = GameController.Instance;
 
         pyoro.acceptInput = false;
 
@@ -60,7 +58,7 @@ public class Menu : MonoBehaviour
     void Update()
     {
         if(startMusic){
-            bgMusic.PlayMenuMusic(0.01f);
+            gc.bgMusic.PlayMenuMusic(0.01f);
             startMusic = false;
         }
     }
@@ -69,11 +67,10 @@ public class Menu : MonoBehaviour
     {
         if(onMainMenu){
             hideGameOver = true;
-            beanGen.Reset();
-            pyoro.Reset();
-            ground.Reset();
-            gameOverScreenCg.alpha = 0f;
-            StartCoroutine(Fade(false, cg));
+            gameOverScreenCG.alpha = 0f;
+            gc.Reset();
+
+            StartCoroutine(TitleFade(false));
         } else if(pyoro.isDead && pyoro.doneDying && !transitioningToMenu){
             transitioningToMenu = true;
             ShowMainMenu();
@@ -87,56 +84,71 @@ public class Menu : MonoBehaviour
 
     void ShowMainMenu()
     {
-        StartCoroutine(Fade(false, gameOverScreenCg));
-        StartCoroutine(Fade(true, cg));
+        StartCoroutine(GameOverFade(false));
+        StartCoroutine(TitleFade(true));
     }
 
     public void ShowGameOverScreen()
     {
         hideGameOver = false;
-        StartCoroutine(Fade(true, gameOverScreenCg));
+        gc.bgMusic.PlayGameOver();
+        StartCoroutine(GameOverFade(true));
     }
 
-    IEnumerator Fade(bool fadeIn, CanvasGroup fadeCG)
+    IEnumerator TitleFade(bool fadeIn)
     {
         while(beanGen.destroying){
             yield return null;
         }
 
         if(fadeIn){
-            if(fadeCG == cg){
-                bgMusic.PlayMenuMusic(0.01f);
-            }
+            gc.bgMusic.PlayMenuMusic(0.01f);
 
-            while(fadeCG.alpha < 1 && !(fadeCG == gameOverScreenCg && hideGameOver)){
-                fadeCG.alpha += fadeSpeed * Time.deltaTime;
+            while(mainMenuCG.alpha < 1){
+                mainMenuCG.alpha += fadeSpeed * Time.deltaTime;
                 yield return null;
             }
 
-            if(fadeCG == cg){
-                onMainMenu = true;
-                beanGen.Reset();
-                pyoro.Reset();
-                ground.Reset();
-                transitioningToMenu = false;
+            onMainMenu = true;
+            gc.Reset();
+            transitioningToMenu = false;
+        } else {
+            gc.bgMusic.PlayTheme1();
+            onMainMenu = false;
+
+            while(mainMenuCG.alpha > 0){
+                mainMenuCG.alpha -= fadeSpeed * Time.deltaTime;
+                yield return null;
+            }
+
+            beanGen.generateBeans = true;
+        }
+
+        gameOverScreenCG.alpha = 0f;
+        if(!fadeIn){
+
+            hideGameOver = true;
+        }
+
+        pyoro.acceptInput = !fadeIn;
+    }
+
+    IEnumerator GameOverFade(bool fadeIn)
+    {
+        while(beanGen.destroying){
+            yield return null;
+        }
+
+        if(fadeIn){
+            while(gameOverScreenCG.alpha < 1 && !hideGameOver){
+                gameOverScreenCG.alpha += fadeSpeed * Time.deltaTime;
+                yield return null;
             }
         } else {
-            bgMusic.PlayTheme1();
-            onMainMenu = false;
-            while(fadeCG.alpha > 0){
-                fadeCG.alpha -= fadeSpeed * Time.deltaTime;
+            while(gameOverScreenCG.alpha > 0){
+                gameOverScreenCG.alpha -= fadeSpeed * Time.deltaTime;
                 yield return null;
             }
         }
-
-        if(fadeCG == cg){
-            gameOverScreenCg.alpha = 0f;
-            if(!fadeIn){
-                beanGen.generateBeans = true;
-                hideGameOver = true;
-            }
-        }
-
-        pyoro.acceptInput = !fadeIn && fadeCG == cg;
     }
 }

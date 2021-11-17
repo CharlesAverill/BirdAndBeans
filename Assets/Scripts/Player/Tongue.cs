@@ -8,6 +8,7 @@ using UnityEngine;
 public class Tongue : MonoBehaviour
 {
     public float speed = 5f;
+    float minSpeed;
 
     public bool isLaunching;
     bool isRetracting;
@@ -30,6 +31,7 @@ public class Tongue : MonoBehaviour
     float newX;
 
     Pyoro pyoro;
+    GameController gc;
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +41,7 @@ public class Tongue : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         pyoro = Pyoro.Instance;
+        gc = GameController.Instance;
 
         rb.simulated = false;
 
@@ -53,14 +56,16 @@ public class Tongue : MonoBehaviour
         startPoint.transform.parent = transform;
         endPoint.transform.parent = transform;
 
-        lineSlope = -0.7f; //(endPoint.y - startPoint.y) / (endPoint.x - startPoint.x);
+        lineSlope = -0.8f; //(endPoint.y - startPoint.y) / (endPoint.x - startPoint.x);
         lineOffset = startPoint.localPosition.y;
+
+        minSpeed = speed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(pyoro.isDead){
+        if(pyoro.isDead || !pyoro.acceptInput){
             endPoint.localPosition = new Vector3(startPoint.localPosition.x, startPoint.localPosition.y, startPoint.localPosition.z);
             lr.SetPosition(1, endPoint.localPosition);
 
@@ -68,7 +73,19 @@ public class Tongue : MonoBehaviour
         } else if(isLaunching)
         {
             MoveTongueEnd();
+        } else {
+            UpdateTongueSpeed();
         }
+    }
+
+    public void Reset()
+    {
+        speed = minSpeed;
+    }
+
+    void UpdateTongueSpeed()
+    {
+        speed = Mathf.Min(minSpeed + gc.timePassed / 100f, 15f);
     }
 
     float getTongueY(float x)

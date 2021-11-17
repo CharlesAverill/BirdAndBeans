@@ -14,7 +14,6 @@ public class BeanGenerator : MonoBehaviour
     float maxGenerationRate;
     const int minGenerationRate = 12;
     int frameCount;
-    float timePassed;
 
     public Transform leftBound;
     public Transform rightBound;
@@ -23,6 +22,8 @@ public class BeanGenerator : MonoBehaviour
 
     public bool generateBeans = false;
     public bool destroying = false;
+
+    GameController gc;
 
     void Awake()
     {
@@ -39,6 +40,8 @@ public class BeanGenerator : MonoBehaviour
     {
         frameCount = (int)generationRate;
         maxGenerationRate = generationRate;
+        gc = GameController.Instance;
+
         Reset();
     }
 
@@ -54,8 +57,6 @@ public class BeanGenerator : MonoBehaviour
     void Update()
     {
         if(generateBeans && !destroying){
-            timePassed += Time.deltaTime;
-
             UpdateGenerationRate();
 
             if(frameCount++ > generationRate){
@@ -80,7 +81,7 @@ public class BeanGenerator : MonoBehaviour
 
     void UpdateGenerationRate()
     {
-        generationRate = Mathf.Max(maxGenerationRate - 2f * timePassed, 10);
+        generationRate = Mathf.Max(maxGenerationRate - 1f * gc.timePassed, 10);
     }
 
     public void DestroyAllBeans(bool playSound=true)
@@ -100,7 +101,7 @@ public class BeanGenerator : MonoBehaviour
         }
 
         beans = new List<Bean>();
-        timePassed = 0f;
+        gc.ResetTime();
         destroying = false;
     }
 }

@@ -43,7 +43,7 @@ public class Pyoro : MonoBehaviour
             _instance = this;
         }
 
-        originalTransform = Instantiate(new GameObject("OriginalPyoroTransform")).transform;
+        originalTransform = new GameObject("OriginalPyoroTransform").transform;
         originalTransform.position = transform.position;
     }
 
@@ -136,7 +136,6 @@ public class Pyoro : MonoBehaviour
         anim.SetTrigger("die");
         acceptInput = false;
 
-        menu.bgMusic.PlayGameOver();
         menu.ShowGameOverScreen();
 
         float targetDestroyHeight = transform.position.y - sr.size.y * 3f;
