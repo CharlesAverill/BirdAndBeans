@@ -44,6 +44,8 @@ public class Bean : MonoBehaviour
     BeanGenerator bg;
     Ground ground;
 
+    bool addedPoints = false;
+
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -63,7 +65,11 @@ public class Bean : MonoBehaviour
     void FixedUpdate()
     {
         if(isCaught){
-            transform.localScale *= 0.95f;
+            if(!addedPoints){
+                AddPoints();
+            }
+
+            transform.localScale *= 0.92f;
             rb.simulated = false;
         } else if(!isDead){
             transform.Translate(-Vector3.up * fallSpeed * Time.fixedDeltaTime);
@@ -79,6 +85,12 @@ public class Bean : MonoBehaviour
         }
     }
 
+    public void AddPoints()
+    {
+        addedPoints = true;
+        bg.AddPoints(transform.position);
+    }
+
     void OnTriggerEnter2D(Collider2D other){
         if(isDead || isCaught){
             return;
@@ -90,7 +102,10 @@ public class Bean : MonoBehaviour
             Explode();
         } else if(other.gameObject.tag == "BeanDeathZone"){
             Destroy(gameObject);
+        } else if(other.gameObject.tag == "Untagged"){
+            return;
         }
+
         isDead = true;
     }
 
@@ -145,7 +160,7 @@ public class Bean : MonoBehaviour
                 break;
             case BeanType.Special:
                 ag.SendAllAngels();
-                bg.DestroyAllBeans();
+                bg.DestroyAllBeans(true, true);
                 break;
         }
     }

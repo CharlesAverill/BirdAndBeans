@@ -23,6 +23,8 @@ public class BeanGenerator : MonoBehaviour
     public bool generateBeans = false;
     public bool destroying = false;
 
+    public Transform[] pointBounds = new Transform[5];
+
     GameController gc;
 
     void Awake()
@@ -86,17 +88,20 @@ public class BeanGenerator : MonoBehaviour
         generationRate = Mathf.Max(maxGenerationRate - 1f * gc.timePassed, 10);
     }
 
-    public void DestroyAllBeans(bool playSound=true)
+    public void DestroyAllBeans(bool playSound=true, bool addPoints=false)
     {
-        StartCoroutine(_DestroyAllBeansEnumerator(playSound));
+        StartCoroutine(_DestroyAllBeansEnumerator(playSound, addPoints));
     }
 
-    IEnumerator _DestroyAllBeansEnumerator(bool playSound)
+    IEnumerator _DestroyAllBeansEnumerator(bool playSound, bool addPoints)
     {
         destroying = true;
 
         for(int i = 0; i < beans.Count; i++){
             if(beans[i] != null){
+                if(addPoints){
+                    beans[i].AddPoints();
+                }
                 beans[i].Explode(playSound);
                 yield return null;
             }
@@ -105,5 +110,24 @@ public class BeanGenerator : MonoBehaviour
         beans = new List<Bean>();
         gc.UpdateTime(-1f * gc.timePassed / 3f);
         destroying = false;
+    }
+
+    public void AddPoints(Vector3 position)
+    {
+        int numPoints = 0;
+
+        if(position.y >= pointBounds[0].position.y){
+            numPoints = 1000;
+        } else if(position.y >= pointBounds[1].position.y){
+            numPoints = 300;
+        } else if(position.y >= pointBounds[2].position.y){
+            numPoints = 100;
+        } else if(position.y >= pointBounds[3].position.y){
+            numPoints = 50;
+        } else if(position.y >= pointBounds[4].position.y){
+            numPoints = 10;
+        }
+
+        gc.AddPoints(numPoints, position);
     }
 }
