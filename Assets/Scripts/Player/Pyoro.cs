@@ -15,6 +15,8 @@ public class Pyoro : MonoBehaviour
 
     public float moveSpeed = 5f;
 
+    Menu menu;
+
     Tongue tongue;
 
     Animator anim;
@@ -25,9 +27,12 @@ public class Pyoro : MonoBehaviour
     Vector2 inputVector;
     float facing = -1;
 
-    bool isDead;
+    public bool isDead;
+    public bool doneDying;
 
     public bool acceptInput = true;
+
+    Transform originalTransform;
 
     void Awake()
     {
@@ -37,6 +42,9 @@ public class Pyoro : MonoBehaviour
         } else {
             _instance = this;
         }
+
+        originalTransform = Instantiate(new GameObject("OriginalPyoroTransform")).transform;
+        originalTransform.position = transform.position;
     }
 
     // Start is called before the first frame update
@@ -48,8 +56,19 @@ public class Pyoro : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         tongue = GetComponentInChildren<Tongue>();
+        menu = Menu.Instance;
+    }
 
-        Application.targetFrameRate = 60;
+    public void Reset()
+    {
+        acceptInput = false;
+        isDead = false;
+        doneDying = false;
+        transform.position = originalTransform.position;
+        anim.SetBool("isLaunching", false);
+        anim.SetBool("isWalking", false);
+        anim.SetTrigger("SetIdle");
+        inputVector = Vector2.zero;
     }
 
     void FixedUpdate()
@@ -80,7 +99,7 @@ public class Pyoro : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        if(!acceptInput){
+        if(!acceptInput || isDead || tongue.isLaunching){
             return;
         }
 
@@ -100,6 +119,7 @@ public class Pyoro : MonoBehaviour
 
         tongue.Launch();
 
+        anim.SetBool("isWalking", false);
         anim.SetBool("isLaunching", true);
     }
 
@@ -114,8 +134,10 @@ public class Pyoro : MonoBehaviour
     {
         isDead = true;
         anim.SetTrigger("die");
+        acceptInput = false;
 
-        Menu.Instance.bgMusic.PlayGameOver();
+        menu.bgMusic.PlayGameOver();
+        menu.ShowGameOverScreen();
 
         float targetDestroyHeight = transform.position.y - sr.size.y * 3f;
 
@@ -128,6 +150,7 @@ public class Pyoro : MonoBehaviour
             yield return null;
         }
 
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        doneDying = true;
     }
 }

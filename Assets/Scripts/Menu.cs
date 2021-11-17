@@ -16,11 +16,16 @@ public class Menu : MonoBehaviour
 
     CanvasGroup cg;
 
+    Ground ground;
     Pyoro pyoro;
     BeanGenerator beanGen;
     public DigitalRuby.SoundManagerNamespace.BGMusic bgMusic;
 
+    public CanvasGroup gameOverScreenCg;
+
     bool startMusic;
+    bool transitioningToMenu;
+    bool hideGameOver;
 
     void Awake()
     {
@@ -30,6 +35,8 @@ public class Menu : MonoBehaviour
         } else {
             _instance = this;
         }
+
+        Application.targetFrameRate = 60;
     }
 
     // Start is called before the first frame update
@@ -37,6 +44,7 @@ public class Menu : MonoBehaviour
     {
         cg = GetComponent<CanvasGroup>();
 
+        ground = Ground.Instance;
         pyoro = Pyoro.Instance;
         beanGen = BeanGenerator.Instance;
         bgMusic = DigitalRuby.SoundManagerNamespace.BGMusic.Instance;
@@ -60,7 +68,15 @@ public class Menu : MonoBehaviour
     public void Start(InputAction.CallbackContext context)
     {
         if(onMainMenu){
-            StartCoroutine(HideAnimation());
+            hideGameOver = true;
+            beanGen.Reset();
+            pyoro.Reset();
+            ground.Reset();
+            gameOverScreenCg.alpha = 0f;
+            StartCoroutine(Fade(false, cg));
+        } else if(pyoro.isDead && pyoro.doneDying && !transitioningToMenu){
+            transitioningToMenu = true;
+            ShowMainMenu();
         }
     }
 
@@ -69,18 +85,58 @@ public class Menu : MonoBehaviour
         Time.timeScale = Time.timeScale == 0 ? 1 : 0;
     }
 
-    IEnumerator HideAnimation()
+    void ShowMainMenu()
     {
-        onMainMenu = false;
+        StartCoroutine(Fade(false, gameOverScreenCg));
+        StartCoroutine(Fade(true, cg));
+    }
 
-        bgMusic.PlayTheme1();
+    public void ShowGameOverScreen()
+    {
+        hideGameOver = false;
+        StartCoroutine(Fade(true, gameOverScreenCg));
+    }
 
-        while(cg.alpha > 0){
-            cg.alpha -= fadeSpeed * Time.deltaTime;
+    IEnumerator Fade(bool fadeIn, CanvasGroup fadeCG)
+    {
+        while(beanGen.destroying){
             yield return null;
         }
 
-        pyoro.acceptInput = true;
-        beanGen.generateBeans = true;
+        if(fadeIn){
+            if(fadeCG == cg){
+                bgMusic.PlayMenuMusic(0.01f);
+            }
+
+            while(fadeCG.alpha < 1 && !(fadeCG == gameOverScreenCg && hideGameOver)){
+                fadeCG.alpha += fadeSpeed * Time.deltaTime;
+                yield return null;
+            }
+
+            if(fadeCG == cg){
+                onMainMenu = true;
+                beanGen.Reset();
+                pyoro.Reset();
+                ground.Reset();
+                transitioningToMenu = false;
+            }
+        } else {
+            bgMusic.PlayTheme1();
+            onMainMenu = false;
+            while(fadeCG.alpha > 0){
+                fadeCG.alpha -= fadeSpeed * Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        if(fadeCG == cg){
+            gameOverScreenCg.alpha = 0f;
+            if(!fadeIn){
+                beanGen.generateBeans = true;
+                hideGameOver = true;
+            }
+        }
+
+        pyoro.acceptInput = !fadeIn && fadeCG == cg;
     }
 }

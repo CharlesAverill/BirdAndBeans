@@ -22,7 +22,7 @@ public class BeanGenerator : MonoBehaviour
     public List<Bean> beans;
 
     public bool generateBeans = false;
-    bool destroying = false;
+    public bool destroying = false;
 
     void Awake()
     {
@@ -39,8 +39,15 @@ public class BeanGenerator : MonoBehaviour
     {
         frameCount = (int)generationRate;
         maxGenerationRate = generationRate;
+        Reset();
+    }
 
-        beans = new List<Bean>();
+    public void Reset()
+    {
+        DestroyAllBeans(false);
+        UpdateGenerationRate();
+        frameCount = (int)generationRate;
+        generateBeans = false;
     }
 
     // Update is called once per frame
@@ -58,7 +65,7 @@ public class BeanGenerator : MonoBehaviour
                 Bean newBean = Instantiate(beanPrefab, new Vector3(xCoord, leftBound.position.y, leftBound.position.z), Quaternion.identity).GetComponent<Bean>();
                 // Set bean color with distribution {green = .9, pink = .08, special = .02}
                 int r = Random.Range(1, 101);
-                newBean.SetBeanType(r < 90 ? "green" : (r < 99 ? "pink" : "special"));
+                newBean.SetBeanType(r < 92 ? "green" : (r < 99 ? "pink" : "special"));
 
                 if(beans.Count == 0){
                     newBean.fallSpeed = Bean.minFallSpeed;
@@ -76,18 +83,18 @@ public class BeanGenerator : MonoBehaviour
         generationRate = Mathf.Max(maxGenerationRate - 2f * timePassed, 10);
     }
 
-    public void DestroyAllBeans()
+    public void DestroyAllBeans(bool playSound=true)
     {
-        StartCoroutine(_DestroyAllBeansEnumerator());
+        StartCoroutine(_DestroyAllBeansEnumerator(playSound));
     }
 
-    IEnumerator _DestroyAllBeansEnumerator()
+    IEnumerator _DestroyAllBeansEnumerator(bool playSound)
     {
         destroying = true;
 
         for(int i = 0; i < beans.Count; i++){
             if(beans[i] != null){
-                beans[i].Explode();
+                beans[i].Explode(playSound);
                 yield return null;
             }
         }

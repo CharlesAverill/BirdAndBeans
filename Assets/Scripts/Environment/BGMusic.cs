@@ -50,7 +50,7 @@ namespace DigitalRuby.SoundManagerNamespace
 
         public void PlayGameOver()
         {
-            gameOver.PlayLoopingMusicManaged(1.0f, 0f, false);
+            gameOver.PlayLoopingMusicManaged(.8f, 0f, false);
         }
     }
 }

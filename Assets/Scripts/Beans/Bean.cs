@@ -86,19 +86,21 @@ public class Bean : MonoBehaviour
         isDead = true;
     }
 
-    public void Explode()
+    public void Explode(bool playSound=true)
     {
         isDead = true;
-        StartCoroutine(_ExplodeEnumerator());
+        StartCoroutine(_ExplodeEnumerator(playSound));
     }
 
-    IEnumerator _ExplodeEnumerator()
+    IEnumerator _ExplodeEnumerator(bool playSound)
     {
         rb.simulated = false;
 
-        audioSource.Stop();
-        audioSource.clip = explodeClip;
-        audioSource.Play();
+        if(playSound){
+            audioSource.Stop();
+            audioSource.clip = explodeClip;
+            audioSource.Play();
+        }
 
         anim.SetTrigger("BeanExplode");
         while(anim.GetCurrentAnimatorStateInfo(0).IsName("BeanExplode") || audioSource.isPlaying){

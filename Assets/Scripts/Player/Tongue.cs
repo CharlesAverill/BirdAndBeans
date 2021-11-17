@@ -29,12 +29,16 @@ public class Tongue : MonoBehaviour
 
     float newX;
 
+    Pyoro pyoro;
+
     // Start is called before the first frame update
     void Start()
     {
         lr = GetComponent<LineRenderer>();
         circleCollider = GetComponent<CircleCollider2D>();
         rb = GetComponent<Rigidbody2D>();
+
+        pyoro = Pyoro.Instance;
 
         rb.simulated = false;
 
@@ -56,7 +60,12 @@ public class Tongue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isLaunching)
+        if(pyoro.isDead){
+            endPoint.localPosition = new Vector3(startPoint.localPosition.x, startPoint.localPosition.y, startPoint.localPosition.z);
+            lr.SetPosition(1, endPoint.localPosition);
+
+            circleCollider.offset = new Vector2(endPoint.localPosition.x, endPoint.localPosition.y);
+        } else if(isLaunching)
         {
             MoveTongueEnd();
         }

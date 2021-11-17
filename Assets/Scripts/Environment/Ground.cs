@@ -31,6 +31,16 @@ public class Ground : MonoBehaviour
     void Start()
     {
         tiles = new Tile[numTiles];
+    }
+
+    public void Reset()
+    {
+        for(int i = 0; i < numTiles; i++){
+            if(tiles[i] != null){
+                Destroy(tiles[i].gameObject);
+            }
+        }
+        tiles = new Tile[numTiles];
         emptyTiles = new List<int>();
 
         for(int i = 0; i < numTiles; i++)
