@@ -68,6 +68,8 @@ public class BeanGenerator : MonoBehaviour
                 int r = Random.Range(1, 101);
                 newBean.SetBeanType(r < 92 ? "green" : (r < 99 ? "pink" : "special"));
 
+                newBean.fallSpeed = Bean.minFallSpeed + (Bean.maxFallSpeed - Bean.minFallSpeed) * (1 - generationRate / maxGenerationRate) + Random.Range(-0.5f, 0.5f);
+
                 if(beans.Count == 0){
                     newBean.fallSpeed = Bean.minFallSpeed;
                     newBean.SetBeanType("green");
@@ -101,7 +103,7 @@ public class BeanGenerator : MonoBehaviour
         }
 
         beans = new List<Bean>();
-        gc.ResetTime();
+        gc.UpdateTime(-1f * gc.timePassed / 3f);
         destroying = false;
     }
 }

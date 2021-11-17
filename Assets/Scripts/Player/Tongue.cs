@@ -10,8 +10,16 @@ public class Tongue : MonoBehaviour
     public float speed = 5f;
     float minSpeed;
 
+    float launchStart;
     public bool isLaunching;
+    public bool canRetract {
+        get {
+            return Mathf.Abs(Time.time - launchStart) > 0.2f;
+        }
+    }
     bool isRetracting;
+
+    public SpriteRenderer tongueEndSprite;
 
     CircleCollider2D circleCollider;
     Rigidbody2D rb;
@@ -50,6 +58,9 @@ public class Tongue : MonoBehaviour
         GameObject temp2 = new GameObject("Tongue End");
         endPoint = temp2.transform;
 
+        tongueEndSprite.transform.parent = endPoint;
+        tongueEndSprite.enabled = false;
+
         startPoint.localPosition = lr.GetPosition(0);
         endPoint.localPosition = lr.GetPosition(1);
 
@@ -66,8 +77,9 @@ public class Tongue : MonoBehaviour
     void Update()
     {
         if(pyoro.isDead || !pyoro.acceptInput){
-            endPoint.localPosition = new Vector3(startPoint.localPosition.x, startPoint.localPosition.y, startPoint.localPosition.z);
+            endPoint.localPosition = startPoint.localPosition;
             lr.SetPosition(1, endPoint.localPosition);
+            tongueEndSprite.enabled = false;
 
             circleCollider.offset = new Vector2(endPoint.localPosition.x, endPoint.localPosition.y);
         } else if(isLaunching)
@@ -81,6 +93,8 @@ public class Tongue : MonoBehaviour
     public void Reset()
     {
         speed = minSpeed;
+
+        tongueEndSprite.enabled = false;
     }
 
     void UpdateTongueSpeed()
@@ -97,7 +111,7 @@ public class Tongue : MonoBehaviour
     {
         if(isRetracting)
         {
-            newX = endPoint.localPosition.x + (Time.deltaTime * speed);
+            newX = endPoint.localPosition.x + (Time.deltaTime * speed * 2f);
         } else {
             newX = endPoint.localPosition.x - (Time.deltaTime * speed);
         }
@@ -110,6 +124,8 @@ public class Tongue : MonoBehaviour
 
     public void Launch()
     {
+        launchStart = Time.time;
+
         isLaunching = true;
         isRetracting = false;
 
@@ -120,6 +136,8 @@ public class Tongue : MonoBehaviour
 
     IEnumerator launchEnumerator()
     {
+        tongueEndSprite.enabled = true;
+
         while(!isRetracting)
         {
             yield return null;
@@ -129,11 +147,13 @@ public class Tongue : MonoBehaviour
 
         while(isRetracting)
         {
-            if(startPoint.localPosition.x < endPoint.localPosition.x){
+            if(startPoint.localPosition.x <= endPoint.localPosition.x){
                 isRetracting = false;
             }
             yield return null;
         }
+
+        tongueEndSprite.enabled = false;
 
         isLaunching = false;
         isRetracting = false;
@@ -145,6 +165,11 @@ public class Tongue : MonoBehaviour
 
         endPoint.localPosition = startPoint.localPosition;
         lr.SetPosition(1, endPoint.localPosition);
+    }
+
+    public void ForceRetract()
+    {
+        isRetracting = true;
     }
 
     void OnCollisionEnter2D(Collision2D other)

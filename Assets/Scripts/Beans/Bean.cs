@@ -16,8 +16,16 @@ public class Bean : MonoBehaviour
     }
     public BeanType beanType;
 
-    public float fallSpeed = 0f;
-    public const float minFallSpeed = 2f;
+    float _fallSpeed = 0f;
+    public float fallSpeed {
+        get {
+            return _fallSpeed;
+        }
+        set {
+            _fallSpeed = Mathf.Clamp(Mathf.Abs(value), minFallSpeed, maxFallSpeed);
+        }
+    }
+    public const float minFallSpeed = 1.3f;
     public const float maxFallSpeed = 3f;
 
     public AudioClip collectClip;

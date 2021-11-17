@@ -65,7 +65,6 @@ public class Pyoro : MonoBehaviour
         isDead = false;
         doneDying = false;
         transform.position = originalTransform.position;
-        anim.SetBool("isLaunching", false);
         anim.SetBool("isWalking", false);
         anim.SetTrigger("SetIdle");
         inputVector = Vector2.zero;
@@ -94,12 +93,17 @@ public class Pyoro : MonoBehaviour
             }
         }
 
-        anim.SetBool("isWalking", playWalkAnimation);
+        if(playWalkAnimation){
+            anim.SetBool("isWalking", true);
+        } else {
+            anim.SetBool("isWalking", false);
+            anim.SetTrigger("SetIdle");
+        }
     }
 
     public void Move(InputAction.CallbackContext context)
     {
-        if(!acceptInput || isDead || tongue.isLaunching){
+        if(!acceptInput || isDead){
             return;
         }
 
@@ -113,10 +117,11 @@ public class Pyoro : MonoBehaviour
 
     public void Fire(InputAction.CallbackContext context)
     {
-        if(tongue.isLaunching || isDead || !acceptInput){
+        if(tongue.isLaunching || isDead || !acceptInput || !context.started){
             return;
         }
 
+        //inputVector = Vector2.zero;
         tongue.Launch();
 
         anim.SetBool("isWalking", false);
