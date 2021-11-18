@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -9,12 +10,16 @@ public class GameController : MonoBehaviour
 
     public float timePassed { get; private set; }
 
-    int points;
+    int score;
+    int highScore;
 
     Ground ground;
     Pyoro pyoro;
     BeanGenerator beanGen;
     public DigitalRuby.SoundManagerNamespace.BGMusic bgMusic;
+
+    public Text scoreText;
+    public Text highScoreText;
 
     public GameObject pointsPrefab;
 
@@ -33,6 +38,8 @@ public class GameController : MonoBehaviour
     {
         timePassed = 0f;
 
+        score = 0;
+
         ground = Ground.Instance;
         pyoro = Pyoro.Instance;
         beanGen = BeanGenerator.Instance;
@@ -44,6 +51,9 @@ public class GameController : MonoBehaviour
         beanGen.Reset();
         pyoro.Reset();
         ground.Reset();
+
+        score = 0;
+        scoreText.text = "000000";
     }
 
     // Update is called once per frame
@@ -64,7 +74,11 @@ public class GameController : MonoBehaviour
 
     public void AddPoints(int value, Vector3 position)
     {
-        points += value;
+        score = Mathf.Min(score + value, 999999);
+        highScore = Mathf.Max(score, highScore);
+
+        scoreText.text = score.ToString("000000");
+        highScoreText.text = highScore.ToString("000000");
 
         StartCoroutine(_ShowPointsEnumerator(value, position));
     }
