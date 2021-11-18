@@ -32,6 +32,7 @@ public class GameController : MonoBehaviour
     Ground ground;
     Pyoro pyoro;
     BeanGenerator beanGen;
+    BackgroundController bgc;
     public DigitalRuby.SoundManagerNamespace.BGMusic bgMusic;
 
     void Awake()
@@ -42,6 +43,8 @@ public class GameController : MonoBehaviour
         } else {
             _instance = this;
         }
+
+        Application.targetFrameRate = 60;
     }
 
     // Start is called before the first frame update
@@ -62,6 +65,7 @@ public class GameController : MonoBehaviour
         ground = Ground.Instance;
         pyoro = Pyoro.Instance;
         beanGen = BeanGenerator.Instance;
+        bgc = BackgroundController.Instance;
     }
 
     public void Reset()
@@ -70,6 +74,7 @@ public class GameController : MonoBehaviour
         beanGen.Reset();
         pyoro.Reset();
         ground.Reset();
+        bgc.Reset();
 
         score = 0;
         scoreText.text = "000000";
@@ -99,6 +104,8 @@ public class GameController : MonoBehaviour
     {
         score = Mathf.Min(score + value, 999999);
         scoreText.text = score.ToString("000000");
+
+        bgc.UpdateBackground(score);
 
         if(score > highScore){
             highScore = score;

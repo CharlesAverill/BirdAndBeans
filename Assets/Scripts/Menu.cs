@@ -34,8 +34,6 @@ public class Menu : MonoBehaviour
         } else {
             _instance = this;
         }
-
-        Application.targetFrameRate = 60;
     }
 
     // Start is called before the first frame update

@@ -14,6 +14,15 @@ TextureImporter:
   - first:
       213: 6930656735175103713
     second: trees
+  - first:
+      213: 5392773386914483470
+    second: sepia_bg
+  - first:
+      213: -5222788323760576981
+    second: monochrome_bg
+  - first:
+      213: 7608924141058073638
+    second: trees_sepia
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -123,7 +132,7 @@ TextureImporter:
       name: dusk_bg
       rect:
         serializedVersion: 2
-        x: 349
+        x: 350
         y: 536
         width: 256
         height: 168
@@ -170,7 +179,7 @@ TextureImporter:
         width: 256
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -178,6 +187,69 @@ TextureImporter:
       bones: []
       spriteID: 1e4d7489493ae2060800000000000000
       internalID: 6930656735175103713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sepia_bg
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 195
+        width: 256
+        height: 168
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0dc731c2daf6da40800000000000000
+      internalID: 5392773386914483470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monochrome_bg
+      rect:
+        serializedVersion: 2
+        x: 479
+        y: 195
+        width: 256
+        height: 168
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b266139e0bde487b0800000000000000
+      internalID: -5222788323760576981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: trees_sepia
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 19
+        width: 256
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62429a64134589960800000000000000
+      internalID: 7608924141058073638
       vertices: []
       indices: 
       edges: []
