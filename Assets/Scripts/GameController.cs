@@ -1,5 +1,7 @@
+using System;
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,15 +15,24 @@ public class GameController : MonoBehaviour
     int score;
     int highScore;
 
-    Ground ground;
-    Pyoro pyoro;
-    BeanGenerator beanGen;
-    public DigitalRuby.SoundManagerNamespace.BGMusic bgMusic;
-
     public Text scoreText;
     public Text highScoreText;
 
     public GameObject pointsPrefab;
+
+    // JavaScript functions
+    [DllImport("__Internal")]
+    private static extern void SaveHighScore(int score);
+
+    [DllImport("__Internal")]
+    private static extern int LoadHighScore();
+
+    bool javaScriptInitialized = true;
+
+    Ground ground;
+    Pyoro pyoro;
+    BeanGenerator beanGen;
+    public DigitalRuby.SoundManagerNamespace.BGMusic bgMusic;
 
     void Awake()
     {
@@ -39,6 +50,14 @@ public class GameController : MonoBehaviour
         timePassed = 0f;
 
         score = 0;
+        try {
+            highScore = LoadHighScore();
+        } catch(EntryPointNotFoundException) {
+            highScore = 0;
+            javaScriptInitialized = false;
+        }
+
+        highScoreText.text = highScore.ToString("000000");
 
         ground = Ground.Instance;
         pyoro = Pyoro.Instance;
@@ -54,6 +73,10 @@ public class GameController : MonoBehaviour
 
         score = 0;
         scoreText.text = "000000";
+
+        if(javaScriptInitialized){
+            SaveHighScore(highScore);
+        }
     }
 
     // Update is called once per frame
@@ -75,10 +98,16 @@ public class GameController : MonoBehaviour
     public void AddPoints(int value, Vector3 position)
     {
         score = Mathf.Min(score + value, 999999);
-        highScore = Mathf.Max(score, highScore);
-
         scoreText.text = score.ToString("000000");
-        highScoreText.text = highScore.ToString("000000");
+
+        if(score > highScore){
+            highScore = score;
+            highScoreText.text = highScore.ToString("000000");
+
+            if(javaScriptInitialized){
+                SaveHighScore(highScore);
+            }
+        }
 
         StartCoroutine(_ShowPointsEnumerator(value, position));
     }

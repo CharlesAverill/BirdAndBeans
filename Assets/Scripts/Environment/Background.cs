@@ -16,10 +16,13 @@ public class Background : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        /*
         // Pick a random background
         if(backgroundIndex < 0) {
             backgroundIndex = Random.Range(0, backgroundSprites.Length + 1);
         }
+        */
+        backgroundIndex = 0;
 
         sr = GetComponent<SpriteRenderer>();
 

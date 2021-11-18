@@ -64,10 +64,15 @@ public class Pyoro : MonoBehaviour
         acceptInput = false;
         isDead = false;
         doneDying = false;
+
         transform.position = originalTransform.position;
+
         anim.SetBool("isWalking", false);
         anim.SetTrigger("SetIdle");
+
         inputVector = Vector2.zero;
+
+        boxCollider.enabled = true;
     }
 
     void FixedUpdate()
@@ -153,6 +158,8 @@ public class Pyoro : MonoBehaviour
             yVelocity += -9.8f * Time.deltaTime;
             yield return null;
         }
+
+        boxCollider.enabled = false;
 
         //Destroy(gameObject);
         doneDying = true;
