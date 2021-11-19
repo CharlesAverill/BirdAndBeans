@@ -133,9 +133,14 @@ public class Pyoro : MonoBehaviour
         anim.SetBool("isLaunching", true);
     }
 
+    public void Chew()
+    {
+        anim.SetTrigger("Chew");
+    }
+
     public void Die()
     {
-        if(!isDead){
+        if(!isDead && acceptInput){
             StartCoroutine(DieAnimation());
         }
     }

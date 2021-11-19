@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(LineRenderer))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -28,6 +29,8 @@ public class Tongue : MonoBehaviour
     Transform startPoint;
     Transform endPoint;
 
+    AudioSource audioSource;
+
     Bean caughtBean;
 
     float flip = 1f;
@@ -47,6 +50,7 @@ public class Tongue : MonoBehaviour
         lr = GetComponent<LineRenderer>();
         circleCollider = GetComponent<CircleCollider2D>();
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
 
         pyoro = Pyoro.Instance;
         gc = GameController.Instance;
@@ -111,7 +115,7 @@ public class Tongue : MonoBehaviour
     {
         if(isRetracting)
         {
-            newX = endPoint.localPosition.x + (Time.deltaTime * speed * 2f);
+            newX = endPoint.localPosition.x + (Time.deltaTime * speed * 5f);
         } else {
             newX = endPoint.localPosition.x - (Time.deltaTime * speed);
         }
@@ -138,20 +142,30 @@ public class Tongue : MonoBehaviour
     {
         tongueEndSprite.enabled = true;
 
+        audioSource.Play();
+
         while(!isRetracting)
         {
             yield return null;
         }
 
+        audioSource.pitch = -1f;
+
         rb.simulated = false;
 
         while(isRetracting)
         {
-            if(startPoint.localPosition.x <= endPoint.localPosition.x){
+            if(startPoint.localPosition.x <= endPoint.localPosition.x + .5f){
                 isRetracting = false;
             }
+            tongueEndSprite.transform.localScale *= 0.95f;
             yield return null;
         }
+
+        tongueEndSprite.transform.localScale = new Vector3(1f, 1f, 1f);
+
+        audioSource.Stop();
+        audioSource.pitch = 1f;
 
         tongueEndSprite.enabled = false;
 
@@ -161,6 +175,8 @@ public class Tongue : MonoBehaviour
         if(caughtBean != null){
             caughtBean.Activate();
             Destroy(caughtBean.gameObject);
+
+            pyoro.Chew();
         }
 
         endPoint.localPosition = startPoint.localPosition;

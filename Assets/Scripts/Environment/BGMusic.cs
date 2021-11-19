@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class BGMusic : MonoBehaviour
 {
     static BGMusic _instance;
     public static BGMusic Instance { get { return _instance; } }
+
+    public AudioMixer audioMixer;
 
     public AudioSource mainMenu;
     public AudioSource theme1;
@@ -18,6 +21,8 @@ public class BGMusic : MonoBehaviour
     public AudioSource gameOver;
 
     AudioSource current;
+
+    GameController gc;
 
     void Awake()
     {
@@ -35,12 +40,14 @@ public class BGMusic : MonoBehaviour
     void Start()
     {
         current = mainMenu;
+
+        gc = GameController.Instance;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public void StopAll()
