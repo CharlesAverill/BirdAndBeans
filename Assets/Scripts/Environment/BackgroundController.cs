@@ -38,7 +38,7 @@ public class BackgroundController : MonoBehaviour
     public void Reset()
     {
         currentTransition = 0;
-        
+
         for(int i = 0; i < backgroundElements.Length; i++){
             backgroundElements[i].Reset();
         }
@@ -46,8 +46,9 @@ public class BackgroundController : MonoBehaviour
 
     public void UpdateBackground(int score)
     {
+        score /= 1000;
         for(int i = currentTransition; i < backgroundElementsTransitionScores.Length; i++){
-            if(score >= backgroundElementsTransitionScores[i]){
+            if(score >= backgroundElementsTransitionScores[i] && backgroundElements[i] != null){
                 backgroundElements[i].Next();
                 currentTransition = i + 1;
             }
