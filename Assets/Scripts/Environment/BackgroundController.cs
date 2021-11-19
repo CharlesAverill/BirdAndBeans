@@ -40,7 +40,9 @@ public class BackgroundController : MonoBehaviour
         currentTransition = 0;
 
         for(int i = 0; i < backgroundElements.Length; i++){
-            backgroundElements[i].Reset();
+            if(backgroundElements[i] != null){
+                backgroundElements[i].Reset();
+            }
         }
     }
 

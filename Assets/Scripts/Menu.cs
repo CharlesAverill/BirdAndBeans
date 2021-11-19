@@ -111,7 +111,7 @@ public class Menu : MonoBehaviour
             gc.Reset();
             transitioningToMenu = false;
         } else {
-            gc.bgMusic.PlayTheme1();
+            gc.bgMusic.PlayGameMusic(1);
             onMainMenu = false;
 
             while(mainMenuCG.alpha > 0){

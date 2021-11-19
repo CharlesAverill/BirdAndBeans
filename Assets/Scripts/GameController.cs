@@ -33,7 +33,10 @@ public class GameController : MonoBehaviour
     Pyoro pyoro;
     BeanGenerator beanGen;
     BackgroundController bgc;
-    public DigitalRuby.SoundManagerNamespace.BGMusic bgMusic;
+    public BGMusic bgMusic;
+
+    public int[] musicTransitionScores;
+    int level;
 
     void Awake()
     {
@@ -62,6 +65,8 @@ public class GameController : MonoBehaviour
 
         highScoreText.text = highScore.ToString("000000");
 
+        level = 1;
+
         ground = Ground.Instance;
         pyoro = Pyoro.Instance;
         beanGen = BeanGenerator.Instance;
@@ -82,6 +87,8 @@ public class GameController : MonoBehaviour
         if(javaScriptInitialized){
             SaveHighScore(highScore);
         }
+
+        level = 1;
     }
 
     // Update is called once per frame
@@ -106,6 +113,10 @@ public class GameController : MonoBehaviour
         scoreText.text = score.ToString("000000");
 
         bgc.UpdateBackground(score);
+
+        if(level < musicTransitionScores.Length && score >= musicTransitionScores[level]){
+            bgMusic.PlayGameMusic(++level);
+        }
 
         if(score > highScore){
             highScore = score;
