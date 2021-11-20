@@ -28,7 +28,6 @@ public class Bean : MonoBehaviour
     public const float minFallSpeed = 1.3f;
     public const float maxFallSpeed = 3f;
 
-    public AudioClip collectClip;
     public AudioClip explodeClip;
 
     public bool isCaught;
@@ -69,7 +68,7 @@ public class Bean : MonoBehaviour
                 AddPoints();
             }
 
-            transform.localScale *= 0.92f;
+            transform.localScale *= 0.9f;
             rb.simulated = false;
         } else if(!isDead){
             transform.Translate(-Vector3.up * fallSpeed * Time.fixedDeltaTime);

@@ -31,6 +31,10 @@ public class Tongue : MonoBehaviour
 
     AudioSource audioSource;
 
+    public AudioClip tongueLaunch;
+    public AudioClip tongueRetract;
+    public AudioClip beanCollect;
+
     Bean caughtBean;
 
     float flip = 1f;
@@ -142,6 +146,7 @@ public class Tongue : MonoBehaviour
     {
         tongueEndSprite.enabled = true;
 
+        audioSource.clip = tongueLaunch;
         audioSource.Play();
 
         while(!isRetracting)
@@ -149,30 +154,31 @@ public class Tongue : MonoBehaviour
             yield return null;
         }
 
-        audioSource.pitch = -1f;
+        audioSource.clip = tongueRetract;
+        audioSource.Play();
 
+        tongueEndSprite.enabled = false;
         rb.simulated = false;
 
         while(isRetracting)
         {
-            if(startPoint.localPosition.x <= endPoint.localPosition.x + .5f){
+            if(startPoint.localPosition.x <= endPoint.localPosition.x + 1f){
                 isRetracting = false;
             }
-            tongueEndSprite.transform.localScale *= 0.95f;
             yield return null;
         }
 
         tongueEndSprite.transform.localScale = new Vector3(1f, 1f, 1f);
 
         audioSource.Stop();
-        audioSource.pitch = 1f;
-
-        tongueEndSprite.enabled = false;
 
         isLaunching = false;
         isRetracting = false;
 
         if(caughtBean != null){
+            audioSource.clip = beanCollect;
+            audioSource.Play();
+
             caughtBean.Activate();
             Destroy(caughtBean.gameObject);
 
@@ -185,7 +191,9 @@ public class Tongue : MonoBehaviour
 
     public void ForceRetract()
     {
-        isRetracting = true;
+        if(isLaunching){
+            isRetracting = true;
+        }
     }
 
     void OnCollisionEnter2D(Collision2D other)
@@ -201,9 +209,7 @@ public class Tongue : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(isLaunching){
-            isRetracting = true;
-        }
+        ForceRetract();
     }
 
     public void Flip(float n)

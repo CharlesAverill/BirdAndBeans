@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Canvas))]
 [RequireComponent(typeof(CanvasGroup))]
 public class Menu : MonoBehaviour
@@ -21,6 +22,11 @@ public class Menu : MonoBehaviour
     BeanGenerator beanGen;
 
     public CanvasGroup gameOverScreenCG;
+    public CanvasGroup pauseMenu;
+
+    AudioSource audioSource;
+    public AudioClip pause;
+    public AudioClip unpause;
 
     bool startMusic;
     bool transitioningToMenu;
@@ -40,6 +46,7 @@ public class Menu : MonoBehaviour
     void Start()
     {
         mainMenuCG = GetComponent<CanvasGroup>();
+        audioSource = GetComponent<AudioSource>();
 
         pyoro = Pyoro.Instance;
         beanGen = BeanGenerator.Instance;
@@ -77,7 +84,21 @@ public class Menu : MonoBehaviour
 
     public void Pause(InputAction.CallbackContext context)
     {
-        Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        if(pyoro.acceptInput){
+            if(Time.timeScale == 1f){
+                Time.timeScale = 0f;
+                pauseMenu.alpha = 1f;
+
+                audioSource.clip = pause;
+                audioSource.Play();
+            } else {
+                Time.timeScale = 1f;
+                pauseMenu.alpha = 0f;
+
+                audioSource.clip = unpause;
+                audioSource.Play();
+            }
+        }
     }
 
     void ShowMainMenu()

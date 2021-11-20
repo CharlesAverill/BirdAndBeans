@@ -3,15 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(AudioSource))]
 public class Angel : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public bool isBusy;
 
     Animator anim;
+    AudioSource audioSource;
 
     AngelGenerator ag;
     Ground ground;
+
+    public AudioClip drop;
+    public AudioClip replace;
+
+    public AudioClip[] multiDropClips;
 
     // Start is called before the first frame update
     void OnEnable()
@@ -20,6 +27,7 @@ public class Angel : MonoBehaviour
         ground = Ground.Instance;
 
         anim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         isBusy = false;
     }
 
@@ -29,8 +37,14 @@ public class Angel : MonoBehaviour
 
     }
 
-    public void ReplaceTile()
+    public void ReplaceTile(int dropClip=-1)
     {
+        if(dropClip == -1){
+            audioSource.clip = drop;
+        } else {
+            audioSource.clip = multiDropClips[dropClip];
+        }
+
         StartCoroutine(_ReplaceTile());
     }
 
@@ -44,9 +58,16 @@ public class Angel : MonoBehaviour
             transform.position = new Vector3(ground.GetTileX(replaceTileIndex), transform.position.y, transform.position.z);
             Vector3 targetPosition = new Vector3(transform.position.x, targetHeight, transform.position.z);
 
+            audioSource.Play();
+
             while(Mathf.Abs(transform.position.y - targetHeight) > 0.01f){
                 transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed);
                 yield return null;
+            }
+
+            if(audioSource.clip == drop){
+                audioSource.clip = replace;
+                audioSource.Play();
             }
 
             ground.FillEmptyTile(replaceTileIndex);

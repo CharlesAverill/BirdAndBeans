@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beanType: 0
-  collectClip: {fileID: 0}
+  collectClip: {fileID: 8300000, guid: a1bb91b28663419d2b620bfd6e6fe78a, type: 3}
   explodeClip: {fileID: 8300000, guid: c56e9057dbfcbc69593eab177b7f57a5, type: 3}
   isCaught: 0
 --- !u!212 &2466804556599101148

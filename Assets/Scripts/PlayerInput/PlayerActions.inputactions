@@ -19,7 +19,7 @@
                     "id": "8d0fdbe1-31bd-4555-a16f-bf5142e8b234",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Tap"
+                    "interactions": ""
                 },
                 {
                     "name": "Pause",

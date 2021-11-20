@@ -11,7 +11,7 @@ public class AngelGenerator : MonoBehaviour
     public GameObject angelPrefab;
 
     public int numAngels = 10;
-    public float timeBetweenAllAngels = 2f;
+    public float timeBetweenAllAngels = .5f;
     float timePerAngel;
     Angel[] angels;
 
@@ -49,11 +49,11 @@ public class AngelGenerator : MonoBehaviour
 
     }
 
-    public void SendAngel()
+    public void SendAngel(int dropClip=-1)
     {
         int i = GetIdleAngelIndex();
         if(i >= 0){
-            angels[i].ReplaceTile();
+            angels[i].ReplaceTile(dropClip);
         } else {
             throw new Exception("No Idle Angels!");
         }
@@ -68,7 +68,7 @@ public class AngelGenerator : MonoBehaviour
     {
         int max = Mathf.Min(numAngels, ground.NumEmptyTiles());
         for(int i = 0; i < max; i++){
-            SendAngel();
+            SendAngel(i);
             yield return new WaitForSeconds(timePerAngel);
         }
     }

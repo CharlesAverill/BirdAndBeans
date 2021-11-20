@@ -47,7 +47,7 @@ public class BGMusic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void StopAll()
@@ -92,19 +92,20 @@ public class BGMusic : MonoBehaviour
     {
         switch(level){
             case 1:
+                MuteAllLevels();
                 PlayAllLevels();
-                Transition(theme1);
+                Transition(theme1, .5f);
                 break;
             case 2:
-                Transition(theme2);
+                Transition(theme2, .5f);
                 break;
             case 3:
-                Transition(theme3);
+                Transition(theme3, .5f);
                 break;
             case 4:
                 sepia.Stop();
                 sepia.Play();
-                Transition(sepia);
+                Transition(sepia, .8f);
                 break;
             case 5:
                 challenge1.Stop();
@@ -113,13 +114,13 @@ public class BGMusic : MonoBehaviour
                 challenge1.Play();
                 challenge2.Play();
                 challenge3.Play();
-                Transition(challenge1);
+                Transition(challenge1, .8f);
                 break;
             case 6:
-                Transition(challenge2);
+                Transition(challenge2, .8f);
                 break;
             case 7:
-                Transition(challenge3);
+                Transition(challenge3, .8f);
                 break;
         }
     }
@@ -155,13 +156,13 @@ public class BGMusic : MonoBehaviour
         float wait = transitionTime * 1f / (float)steps;
         float delta = transitionVolume * wait;
         for(int i = 0; i < steps; i++){
-            current.volume -= delta;
+            current.volume -= delta * 2f;
             to.volume += delta;
             yield return new WaitForSeconds(wait);
         }
 
         current.volume = 0f;
-        to.volume = 1f;
+        to.volume = transitionVolume;
 
         if(current == mainMenu){
             current.Stop();

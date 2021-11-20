@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -20,6 +21,7 @@ public class Pyoro : MonoBehaviour
     Tongue tongue;
 
     Animator anim;
+    AudioSource audioSource;
     SpriteRenderer sr;
     BoxCollider2D boxCollider;
     Rigidbody2D rb;
@@ -51,6 +53,7 @@ public class Pyoro : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         sr = GetComponent<SpriteRenderer>();
         boxCollider = GetComponent<BoxCollider2D>();
         rb = GetComponent<Rigidbody2D>();
@@ -100,9 +103,15 @@ public class Pyoro : MonoBehaviour
 
         if(playWalkAnimation){
             anim.SetBool("isWalking", true);
+
+            if(!audioSource.isPlaying){
+                audioSource.Play();
+            }
         } else {
             anim.SetBool("isWalking", false);
             anim.SetTrigger("SetIdle");
+
+            audioSource.Stop();
         }
     }
 
@@ -122,15 +131,20 @@ public class Pyoro : MonoBehaviour
 
     public void Fire(InputAction.CallbackContext context)
     {
-        if(tongue.isLaunching || isDead || !acceptInput || !context.started){
+        if(isDead || !acceptInput){
             return;
         }
 
-        //inputVector = Vector2.zero;
-        tongue.Launch();
+        if(context.canceled){
+            tongue.ForceRetract();
+        } else if(!tongue.isLaunching){
+            audioSource.Stop();
+            //inputVector = Vector2.zero;
+            tongue.Launch();
 
-        anim.SetBool("isWalking", false);
-        anim.SetBool("isLaunching", true);
+            anim.SetBool("isWalking", false);
+            anim.SetBool("isLaunching", true);
+        }
     }
 
     public void Chew()
@@ -141,6 +155,7 @@ public class Pyoro : MonoBehaviour
     public void Die()
     {
         if(!isDead && acceptInput){
+            audioSource.Stop();
             StartCoroutine(DieAnimation());
         }
     }
