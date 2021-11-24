@@ -123,6 +123,8 @@ public class Tongue : MonoBehaviour
         } else {
             newX = endPoint.localPosition.x - (Time.deltaTime * speed);
         }
+        
+        newX = Mathf.Min(newX, startPoint.localPosition.x);
 
         endPoint.localPosition = new Vector3(newX, getTongueY(newX), startPoint.localPosition.z);
         lr.SetPosition(1, endPoint.localPosition);
